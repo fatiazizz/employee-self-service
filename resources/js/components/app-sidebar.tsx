@@ -32,7 +32,7 @@ const mainNavItems: NavItem[] = [
     icon: ScrollText, // نامه معرفی
   },
   {
-    title: 'Equipment Letter',
+    title: 'Equipment Request',
     href: '/equipment-request',
     icon: ClipboardList, // نامه تجهیزات
   },

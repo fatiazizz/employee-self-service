@@ -98,6 +98,7 @@ export default function LeaveShow() {
             <div className="text-gray-900">{data.approver?.name ?? 'Not assigned'}</div>
           </div>
         </div>
+        {status === 'pending' && (
 
         <div className="mt-6 flex justify-end">
           <button
@@ -107,6 +108,7 @@ export default function LeaveShow() {
             Change Status
           </button>
         </div>
+            )}
       </div>
 
       {/* Modal */}

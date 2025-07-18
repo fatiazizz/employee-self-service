@@ -18,13 +18,19 @@ class DashboardController extends Controller
         $user = $request->user();
         $isAdmin = $user->is_admin;
 
-        $leave = LeaveRequest::when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))->count();
-        $vehicle = VehicleRequest::when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))->count();
-        $recommendation = RecommendationRequest::when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))->count();
-        $equipment = EquipmentRequest::when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))->count();
+        $leave = LeaveRequest::where('approver_id', $user->id)->where('status', "pending")->count();
+                $vehicle = VehicleRequest::where('approver_id', $user->id)->where('status', "pending")->count();
+        $recommendation = RecommendationRequest::where('approver_id', $user->id)->where('status', "pending")->count();
+        $equipment = EquipmentRequest::where('approver_id', $user->id)->where('status', "pending")->count();
 
-        $leaveRequests = LeaveRequest::with('user')
-            ->when(!$isAdmin, fn($q) => $q->where('user_id', $user->id))
+        $leaveRequests = LeaveRequest::with('user')->
+        when(
+            !$isAdmin,
+            fn($q) => $q->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                      ->orWhere('approver_id', $user->id);
+            })
+        )
             ->latest()->take(5)->get()->map(function ($r) {
                 return [
                     'id' => $r->id,

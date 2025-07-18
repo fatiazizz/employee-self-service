@@ -22,7 +22,7 @@ export default function RecommendationShow() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
 
-    const handleStatusChange = async (newStatus: 'approved' | 'declined') => {
+    const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
         try {
             setProcessing(true);
             await api.post(`/recommendation-request/${data.id}/status`, { status: newStatus });
@@ -116,7 +116,7 @@ export default function RecommendationShow() {
                                 Approve
                             </button>
                             <button
-                                onClick={() => handleStatusChange('declined')}
+                                onClick={() => handleStatusChange('rejected')}
                                 disabled={processing}
                                 className="flex-1 rounded bg-red-600 px-4 py-2 text-sm text-white hover:bg-red-700"
                             >
