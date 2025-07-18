@@ -17,9 +17,8 @@ class RecommendationRequestShowPageController extends Controller
         $user_id = $user->id;
         $isOwner = $recommendation->user_id === $user_id;
         $isAdmin = $user->is_admin ===1;
-        $isApprover = $recommendation->approver_id === $user_id;
         $isManager = $recommendation->user && $recommendation->user->manager_id === $user_id;
-        if (!$isOwner && !$isApprover && !$isManager && !$isAdmin) {
+        if (!$isOwner && !$isManager && !$isAdmin) {
             abort(403, 'Access denied');
         }
 
