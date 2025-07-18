@@ -90,9 +90,29 @@ class DashboardController extends Controller
             ->take(10)
             ->values();
 
+            $managedUsers = [];
+
+if ($user->is_manager) {
+    $managedUsers = \App\Models\User::where('manager_id', $user->id)
+        ->select('id', 'name', 'email')
+        ->get()
+        ->map(function ($u) {
+            return [
+                'id' => $u->id,
+                'name' => $u->name,
+                'email' => $u->email,
+                'code' => 'EMP00' . $u->id,
+            ];
+        });
+}
+
+
+
         return Inertia::render('dashboard', [
             'stats' => compact('leave', 'vehicle', 'recommendation', 'equipment'),
             'recentRequests' => $recentRequests,
+                'managedUsers' => $managedUsers,
+
         ]);
     }
 }

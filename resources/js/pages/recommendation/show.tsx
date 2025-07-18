@@ -12,11 +12,11 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function RecommendationShow() {
     const { data, auth } = usePage<any>().props;
-
-    const isAdmin = auth?.user?.is_admin === 1;
-    const isManager = auth?.user?.id === data.approver.id;
     console.log("auth" , auth)
     console.log("data" , data)
+    const isAdmin = auth?.user?.is_admin === 1;
+    const isManager = auth?.user?.id === (data.approver ? data.approver.id : null);
+
     const [showModal, setShowModal] = useState(false);
     const [status, setStatus] = useState(data.status);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);

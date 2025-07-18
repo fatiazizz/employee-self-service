@@ -53,7 +53,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/{id}', [UsersShowPageController::class, 'show'])->name('admin.users.show');
             Route::post('{id}/manager', [UsersShowPageController::class, 'updateManager'])->name('admin.users.updateManager');
             Route::post('/{id}/make-admin', [UsersShowPageController::class, 'makeAdmin']);
-
+            Route::post('{id}/leave-balance', [UsersShowPageController::class, 'setLeaveBalance']);
+            Route::post('{id}/set-manager', [UsersShowPageController::class, 'setManagerStatus']);
 
         });
     });

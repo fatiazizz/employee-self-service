@@ -7,8 +7,9 @@ import { Head, usePage } from '@inertiajs/react';
 const breadcrumbs: BreadcrumbItem[] = [{ title: 'Dashboard', href: '/dashboard' }];
 
 export default function Dashboard() {
-    const { stats, recentRequests } = usePage<any>().props;
+    const { stats, recentRequests , managedUsers } = usePage<any>().props;
     console.log('recentRequests', recentRequests);
+    console.log('managedUsers', managedUsers);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
@@ -93,6 +94,31 @@ export default function Dashboard() {
                 </table>
             </div>
         </div>
+        {managedUsers?.length > 0 && (
+    <div className="mt-10 rounded bg-white p-4 shadow">
+        <h3 className="mb-4 text-lg font-semibold text-gray-800">Users You Manage</h3>
+
+        <table className="min-w-full overflow-hidden rounded-lg border text-sm text-gray-700">
+            <thead className="bg-gray-100 text-center text-xs text-gray-600 uppercase">
+                <tr>
+                    <th className="px-4 py-3">Name</th>
+                    <th className="px-4 py-3">Email</th>
+                    <th className="px-4 py-3">Code</th>
+                </tr>
+            </thead>
+            <tbody>
+                {managedUsers.map((u: any) => (
+                    <tr key={u.id} className="border-b text-center hover:bg-gray-50">
+                        <td className="px-4 py-3">{u.name}</td>
+                        <td className="px-4 py-3">{u.email}</td>
+                        <td className="px-4 py-3">{u.code}</td>
+                    </tr>
+                ))}
+            </tbody>
+        </table>
+    </div>
+)}
+
         </AppLayout>
     );
 }

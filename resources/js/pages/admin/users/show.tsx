@@ -11,13 +11,17 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function UserShowPage() {
-    const { user, allUsers,auth } = usePage<any>().props;
+    const { user, allUsers, auth } = usePage<any>().props;
     console.log('user', user);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedManagerId, setSelectedManagerId] = useState(user.manager_id);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [showAdminModal, setShowAdminModal] = useState(false);
     const [manager, setManager] = useState(user.manager_id);
+    const [leaveModalOpen, setLeaveModalOpen] = useState(false);
+    const [leaveHours, setLeaveHours] = useState(user.leave_balance?.remaining_hours ?? 0);
+    const [managerModalOpen, setManagerModalOpen] = useState(false);
+    const [isManagerChecked, setIsManagerChecked] = useState(user.is_manager === 1);
 
     const handleSaveManager = async () => {
         try {
@@ -47,6 +51,36 @@ export default function UserShowPage() {
         } catch (error) {
             console.error('Failed to make admin:', error);
             alert('An error occurred while updating admin status.');
+        }
+    };
+
+    const handleSaveLeaveBalance = async () => {
+        try {
+            await api.post(`/admin/users/${user.id}/leave-balance`, {
+                remaining_hours: leaveHours,
+            });
+            setSuccessMessage(`Leave balance updated successfully.`);
+            setLeaveModalOpen(false);
+            setTimeout(() => setSuccessMessage(null), 10000);
+            location.reload();
+        } catch (error) {
+            console.error('Failed to update leave balance:', error);
+            alert('An error occurred while updating leave balance.');
+        }
+    };
+
+    const handleToggleManager = async () => {
+        try {
+            await api.post(`/admin/users/${user.id}/set-manager`, {
+                is_manager: isManagerChecked ? 1 : 0,
+            });
+            setSuccessMessage(`Manager status updated.`);
+            setManagerModalOpen(false);
+            setTimeout(() => setSuccessMessage(null), 10000);
+            location.reload();
+        } catch (error) {
+            console.error('Failed to update manager status:', error);
+            alert('An error occurred while updating manager status.');
         }
     };
 
@@ -85,11 +119,21 @@ export default function UserShowPage() {
                     <button className="rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700" onClick={() => setModalOpen(true)}>
                         Change Manager
                     </button>
-                    {(!user.is_admin && auth.user.is_admin === 1) && (
-                        <button className="rounded bg-purple-600 px-4 py-2 mx-2 text-white hover:bg-purple-700" onClick={() => setShowAdminModal(true)}>
+                    {!user.is_admin && auth.user.is_admin === 1 && (
+                        <button
+                            className="mx-2 rounded bg-purple-600 px-4 py-2  text-white hover:bg-purple-700"
+                            onClick={() => setShowAdminModal(true)}
+                        >
                             Make Admin
                         </button>
                     )}
+
+                    <button className="mt-4 rounded bg-amber-600 px-4 py-2 mx-2 text-white hover:bg-amber-700" onClick={() => setLeaveModalOpen(true)}>
+                        Set Leave Balance
+                    </button>
+                    <button className="mt-4 rounded bg-indigo-600 px-4 py-2 mx-2 text-white hover:bg-indigo-700" onClick={() => setManagerModalOpen(true)}>
+                        Set Manager Status
+                    </button>
                 </div>
             </div>
 
@@ -131,6 +175,44 @@ export default function UserShowPage() {
                         </button>
                         <button className="rounded bg-purple-600 px-4 py-2 text-white hover:bg-purple-700" onClick={handleMakeAdmin}>
                             Confirm
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+
+            <Modal show={leaveModalOpen} onClose={() => setLeaveModalOpen(false)}>
+                <div className="p-6">
+                    <h2 className="mb-4 text-lg font-semibold">Set Leave Balance</h2>
+                    <input
+                        type="number"
+                        min={0}
+                        value={leaveHours}
+                        onChange={(e) => setLeaveHours(Number(e.target.value))}
+                        className="w-full rounded border px-3 py-2"
+                    />
+                    <div className="mt-4 flex justify-end gap-2">
+                        <button className="rounded px-4 py-2 text-gray-600 hover:text-gray-800" onClick={() => setLeaveModalOpen(false)}>
+                            Cancel
+                        </button>
+                        <button className="rounded bg-amber-600 px-4 py-2 text-white hover:bg-amber-700" onClick={handleSaveLeaveBalance}>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </Modal>
+            <Modal show={managerModalOpen} onClose={() => setManagerModalOpen(false)}>
+                <div className="p-6">
+                    <h2 className="mb-4 text-lg font-semibold">Set Manager Status</h2>
+                    <label className="flex items-center gap-2">
+                        <input type="checkbox" checked={isManagerChecked} onChange={(e) => setIsManagerChecked(e.target.checked)} />
+                        <span>Is Manager</span>
+                    </label>
+                    <div className="mt-4 flex justify-end gap-2">
+                        <button className="rounded px-4 py-2 text-gray-600 hover:text-gray-800" onClick={() => setManagerModalOpen(false)}>
+                            Cancel
+                        </button>
+                        <button className="rounded bg-indigo-600 px-4 py-2 text-white hover:bg-indigo-700" onClick={handleToggleManager}>
+                            Save
                         </button>
                     </div>
                 </div>
