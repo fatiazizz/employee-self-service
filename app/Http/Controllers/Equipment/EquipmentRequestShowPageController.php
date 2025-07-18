@@ -18,9 +18,8 @@ class EquipmentRequestShowPageController extends Controller
         $user_id = $user->id;
         $isOwner = $equipment->user_id === $user_id;
         $isAdmin = $user->is_admin ===1;
-        $isApprover = $equipment->approver_id === $user_id;
         $isManager = $equipment->user && $equipment->user->manager_id === $user_id;
-        if (!$isOwner && !$isApprover && !$isManager && !$isAdmin) {
+        if (!$isOwner && !$isManager && !$isAdmin) {
             abort(403, 'Access denied');
         }
 

@@ -17,9 +17,8 @@ class VehicleRequestShowPageController extends Controller
         $user_id = $user->id;
         $isOwner = $vehicle->user_id === $user_id;
         $isAdmin = $user->is_admin ===1;
-        $isApprover = $vehicle->approver_id === $user_id;
         $isManager = $vehicle->user && $vehicle->user->manager_id === $user_id;
-        if (!$isOwner && !$isApprover && !$isManager && !$isAdmin) {
+        if (!$isOwner && !$isManager && !$isAdmin) {
             abort(403, 'Access denied');
         }
 
