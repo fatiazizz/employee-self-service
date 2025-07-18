@@ -1,155 +1,134 @@
-import { useForm, Head, router } from '@inertiajs/react';
-import { useEffect, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
+import api from '@/lib/axios';
 import { type BreadcrumbItem } from '@/types';
+import { Head, router, useForm, usePage } from '@inertiajs/react';
 import dayjs from 'dayjs';
-import axios from 'axios';
+import { useState } from 'react';
 
 const breadcrumbs: BreadcrumbItem[] = [
-  { title: 'Dashboard', href: '/dashboard' },
-  { title: 'Leave Request', href: '/leave-request' },
-  { title: 'Create', href: '/leave-request/create' },
+    { title: 'Dashboard', href: '/dashboard' },
+    { title: 'Leave Request', href: '/leave-request' },
+    { title: 'Create', href: '/leave-request/create' },
 ];
 
 export default function CreateLeave() {
-  const now = dayjs().format('YYYY-MM-DDTHH:mm'); // datetime-local format
+    const { employee_name, employee_code, remaining_hours, year, now } = usePage<any>().props;
+    console.log('remaining_hours', remaining_hours);
 
-  const { data, setData, post, processing, errors, reset } = useForm({
-    employeeName: 'Ahmad Naderi',
-    employeeCode: 'EMP001',
-    remainingLeave: 0,
-    startDateTime: now,
-    endDateTime: now,
-    totalDays: 0,
-  });
+    // const now = dayjs().format('YYYY-MM-DDTHH:mm'); // datetime-local format
 
-  const [validationError, setValidationError] = useState<string | null>(null);
-
-  useEffect(() => {
-    axios.get('/api/user/leave-remaining')
-      .then((res) => {
-        const hours = res.data.remaining_hours ?? 0;
-        setData('remainingLeave', hours / 24); // تبدیل ساعت به روز
-      })
-      .catch(() => setData('remainingLeave', 0));
-  }, []);
-
-  const calculateDays = () => {
-    const start = dayjs(data.startDateTime);
-    const end = dayjs(data.endDateTime);
-    const diff = end.diff(start, 'hour') / 24;
-    return diff > 0 ? diff : 0;
-  };
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    const total = calculateDays();
-
-    if (total > data.remainingLeave) {
-      setValidationError('Requested leave exceeds remaining leave balance.');
-      return;
-    }
-
-    setValidationError(null);
-    setData('totalDays', total);
-
-    post('/api/leave-requests', {
-      data: {
-        start_at: data.startDateTime,
-        end_at: data.endDateTime,
-      },
-      onSuccess: () => {
-        router.visit('/leave-request');
-      },
+    const { data, setData, post, processing, errors, reset } = useForm({
+        employeeName: employee_name,
+        employeeCode: employee_code,
+        remainingLeave: remaining_hours,
+        startDateTime: now,
+        endDateTime: now,
+        totalDays: 0,
     });
-  };
 
-  const handleDecline = () => {
-    reset();
-    router.visit('/leave-request'); // بازگشت به صفحه لیست
-  };
+    const [validationError, setValidationError] = useState<string | null>(null);
 
-  return (
-    <AppLayout breadcrumbs={breadcrumbs}>
-      <Head title="New Leave Request" />
-      <div className="w-full mx-auto mt-6 bg-white p-6 rounded shadow">
-        <h1 className="text-xl font-bold text-gray-800 mb-4">New Leave Request</h1>
+    const calculateDays = () => {
+        const start = dayjs(data.startDateTime);
+        const end = dayjs(data.endDateTime);
+        const diff = end.diff(start, 'hour') / 24;
+        return diff > 0 ? diff : 0;
+    };
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="text-sm text-gray-500">
-            Current Date & Time: <strong>{dayjs().format('YYYY-MM-DD HH:mm')}</strong>
-          </div>
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Employee Name</label>
-            <input
-              value={data.employeeName}
-              disabled
-              className="w-full bg-gray-100 px-3 py-2 rounded border"
-            />
-          </div>
+        const total = calculateDays();
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Employee Code</label>
-            <input
-              value={data.employeeCode}
-              disabled
-              className="w-full bg-gray-100 px-3 py-2 rounded border"
-            />
-          </div>
+        if (total > data.remainingLeave) {
+            setValidationError('Requested leave exceeds remaining leave balance.');
+            return;
+        }
 
-          <div>
-            <label className="block text-sm font-medium mb-1">Remaining Leave</label>
-            <input
-              value={data.remainingLeave}
-              disabled
-              className="w-full bg-gray-100 px-3 py-2 rounded border"
-            />
-          </div>
+        setValidationError(null);
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium mb-1">Start Date & Time</label>
-              <input
-                type="datetime-local"
-                value={data.startDateTime}
-                onChange={(e) => setData('startDateTime', e.target.value)}
-                className="w-full px-3 py-2 border rounded"
-              />
+        try {
+            await api.post('/leave-request/create', {
+                start_at: data.startDateTime,
+                end_at: data.endDateTime,
+                total_days: total,
+            });
+            router.visit('/leave-request');
+        } catch (error:any) {
+          console.log("error",error);
+            setValidationError(error.response.data.message);
+            console.log('Submit error:', error);
+        }
+    };
+
+    const handleDecline = () => {
+        reset();
+        router.visit('/leave-request'); // بازگشت به صفحه لیست
+    };
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="New Leave Request" />
+            <div className="mx-auto mt-6 w-full rounded bg-white p-6 shadow">
+                <h1 className="mb-4 text-xl font-bold text-gray-800">New Leave Request</h1>
+
+                <form onSubmit={handleSubmit} className="space-y-4">
+                    <div className="text-sm text-gray-500">
+                        Current Date & Time: <strong>{dayjs().format('YYYY-MM-DD HH:mm')}</strong>
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm font-medium">Employee Name</label>
+                        <input value={data.employeeName} disabled className="w-full rounded border bg-gray-100 px-3 py-2" />
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm font-medium">Employee Code</label>
+                        <input value={data.employeeCode} disabled className="w-full rounded border bg-gray-100 px-3 py-2" />
+                    </div>
+
+                    <div>
+                        <label className="mb-1 block text-sm font-medium">Remaining Leave</label>
+                        <input value={data.remainingLeave} disabled className="w-full rounded border bg-gray-100 px-3 py-2" />
+                    </div>
+
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+                        <div>
+                            <label className="mb-1 block text-sm font-medium">Start Date & Time</label>
+                            <input
+                                type="datetime-local"
+                                value={data.startDateTime}
+                                onChange={(e) => setData('startDateTime', e.target.value)}
+                                className="w-full rounded border px-3 py-2"
+                            />
+                        </div>
+                        <div>
+                            <label className="mb-1 block text-sm font-medium">End Date & Time</label>
+                            <input
+                                type="datetime-local"
+                                value={data.endDateTime}
+                                onChange={(e) => setData('endDateTime', e.target.value)}
+                                className="w-full rounded border px-3 py-2"
+                            />
+                        </div>
+                    </div>
+
+                    {validationError && <div className="mt-1 text-sm text-red-600">{validationError}</div>}
+
+                    <div className="flex justify-end gap-3 pt-4">
+                        <button
+                            type="button"
+                            onClick={handleDecline}
+                            className="rounded bg-gray-200 px-4 py-2 text-gray-800 transition hover:bg-gray-300"
+                        >
+                            Decline
+                        </button>
+                        <button type="submit" disabled={processing} className="rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700">
+                            Submit
+                        </button>
+                    </div>
+                </form>
             </div>
-            <div>
-              <label className="block text-sm font-medium mb-1">End Date & Time</label>
-              <input
-                type="datetime-local"
-                value={data.endDateTime}
-                onChange={(e) => setData('endDateTime', e.target.value)}
-                className="w-full px-3 py-2 border rounded"
-              />
-            </div>
-          </div>
-
-          {validationError && (
-            <div className="text-red-600 text-sm mt-1">{validationError}</div>
-          )}
-
-          <div className="flex justify-end gap-3 pt-4">
-            <button
-              type="button"
-              onClick={handleDecline}
-              className="bg-gray-200 text-gray-800 px-4 py-2 rounded hover:bg-gray-300 transition"
-            >
-              Decline
-            </button>
-            <button
-              type="submit"
-              disabled={processing}
-              className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-            >
-              Submit
-            </button>
-          </div>
-        </form>
-      </div>
-    </AppLayout>
-  );
+        </AppLayout>
+    );
 }

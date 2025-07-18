@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Leave;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -8,7 +8,7 @@ use App\Models\LeaveRequest;
 use App\Models\LeaveBalance;
 use Carbon\Carbon;
 
-class LeaveRequestController extends Controller
+class LeaveRequestCreateController extends Controller
 {
     public function store(Request $request)
     {
@@ -19,37 +19,42 @@ class LeaveRequestController extends Controller
             'end_at'   => ['required', 'date', 'after:start_at'],
         ]);
 
-        // محاسبه مدت مرخصی به ساعت
+        // Calculate leave duration in hours
         $start = Carbon::parse($validated['start_at']);
         $end = Carbon::parse($validated['end_at']);
         $requestedHours = $start->diffInHours($end);
 
-        // دریافت مانده مرخصی کاربر
+        // Get user's leave balance
         $leaveBalance = $user->leaveBalance()->first();
 
         if (!$leaveBalance) {
-            return response()->json(['message' => 'مانده مرخصی برای شما تعریف نشده است.'], 422);
+            return response()->json([
+                'message' => 'Leave balance is not defined for this user.'
+            ], 422);
         }
 
         if ($requestedHours > $leaveBalance->remaining_hours) {
             return response()->json([
-                'message' => 'مقدار مرخصی درخواستی بیشتر از مانده مرخصی است.',
+                'message' => 'Requested leave exceeds available balance.',
                 'remaining_hours' => $leaveBalance->remaining_hours,
                 'requested_hours' => $requestedHours,
             ], 422);
         }
 
-        // ثبت مرخصی
+        // Create leave request
         $leaveRequest = LeaveRequest::create([
             'user_id'     => $user->id,
-            'approver_id' => $user->manager_id, // ارجاع به مدیر مستقیم
+            'approver_id' => $user->manager_id,
             'start_at'    => $start,
             'end_at'      => $end,
             'status'      => 'pending',
         ]);
 
+        // Decrease remaining hours
+        $leaveBalance->increment('used_hours', $requestedHours);
+
         return response()->json([
-            'message' => 'درخواست مرخصی با موفقیت ثبت شد.',
+            'message' => 'Leave request submitted successfully.',
             'data' => $leaveRequest
         ]);
     }

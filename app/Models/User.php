@@ -53,6 +53,22 @@ class User extends Authenticatable
         return $this->hasMany(LeaveRequest::class);
     }
 
+    public function vehicleRequests(): HasMany
+    {
+        return $this->hasMany(VehicleRequest::class);
+    }
+
+    public function equipmentRequests(): HasMany
+    {
+        return $this->hasMany(EquipmentRequest::class);
+    }
+
+    public function recommendationRequests(): HasMany
+    {
+        return $this->hasMany(RecommendationRequest::class);
+    }
+
+
     public function leaveBalance()
     {
         return $this->hasOne(LeaveBalance::class)->where('year', now()->format('Y'));
