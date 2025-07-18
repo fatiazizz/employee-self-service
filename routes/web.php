@@ -52,6 +52,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::get('/', [UsersListPageController::class, 'index'])->name('admin.users.list');
             Route::get('/{id}', [UsersShowPageController::class, 'show'])->name('admin.users.show');
             Route::post('{id}/manager', [UsersShowPageController::class, 'updateManager'])->name('admin.users.updateManager');
+            Route::post('/{id}/make-admin', [UsersShowPageController::class, 'makeAdmin']);
+
 
         });
     });

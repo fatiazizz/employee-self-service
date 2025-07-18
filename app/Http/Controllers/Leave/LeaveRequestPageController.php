@@ -14,11 +14,18 @@ class LeaveRequestPageController extends Controller
     {
         $user = $request->user();
 
-        // اگر مدیر بود، همه‌ی مرخصی‌های زیردستانش را ببین
-        // در غیر اینصورت، فقط درخواست‌های خودش را
-        $query = LeaveRequest::query()
-            ->with(['user'])
-            ->when(!$user->is_admin, fn($q) => $q->where('user_id', $user->id));
+    $query = LeaveRequest::query()
+        ->with(['user']);
+
+    // فقط اگر ادمین نباشد، فیلتر خاص اعمال شود
+    if (!$user->is_admin) {
+        $query->where(function ($q) use ($user) {
+            $q->where('user_id', $user->id)
+              ->orWhere('approver_id', $user->id);
+        });
+    }
+
+    
 
         $leaveRequests = $query->latest()->get()->map(function ($leave) {
             return [

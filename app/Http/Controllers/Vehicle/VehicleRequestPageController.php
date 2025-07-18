@@ -14,8 +14,16 @@ class VehicleRequestPageController extends Controller
         $user = $request->user();
 
         $query = VehicleRequest::query()
-            ->with(['user', 'vehicle', 'driver.user']) // لود خودکار روابط
-            ->when(!$user->is_admin, fn($q) => $q->where('user_id', $user->id));
+            ->with(['user', 'vehicle', 'driver.user']); // لود خودکار روابط
+
+                            // فقط اگر ادمین نباشد، فیلتر خاص اعمال شود
+    if (!$user->is_admin) {
+        $query->where(function ($q) use ($user) {
+            $q->where('user_id', $user->id)
+              ->orWhere('approver_id', $user->id);
+        });
+    }
+
 
         $vehicleRequests = $query->latest()->get()->map(function ($vehicle) {
             return [

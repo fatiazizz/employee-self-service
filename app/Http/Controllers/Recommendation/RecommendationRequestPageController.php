@@ -14,8 +14,18 @@ class RecommendationRequestPageController extends Controller
         $user = $request->user();
 
         $query = RecommendationRequest::query()
-            ->with(['user'])
-            ->when(!$user->is_admin, fn($q) => $q->where('user_id', $user->id));
+            ->with(['user']);
+            
+
+
+                // فقط اگر ادمین نباشد، فیلتر خاص اعمال شود
+    if (!$user->is_admin) {
+        $query->where(function ($q) use ($user) {
+            $q->where('user_id', $user->id)
+              ->orWhere('approver_id', $user->id);
+        });
+    }
+
 
         $recommendationRequests = $query->latest()->get()->map(function ($recommendation) {
             return [

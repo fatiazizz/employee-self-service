@@ -14,13 +14,12 @@ class UsersListPageController extends Controller
     {
         $currentUser = $request->user();
 
-        // فقط مدیر اجازه دیدن لیست کاربران را دارد
         if (!$currentUser->is_admin) {
             abort(403, 'Access denied');
         }
 
         // گرفتن همه کاربران (به جز مدیر اصلی)
-        $users = User::where('is_admin', false)->with([
+        $users = User::with([
             'leaveRequests' => fn($q) => $q->latest()->limit(1),
             'vehicleRequests' => fn($q) => $q->latest()->limit(1),
             'recommendationRequests' => fn($q) => $q->latest()->limit(1),

@@ -5,12 +5,24 @@ use App\Http\Controllers\Controller;
 use App\Models\VehicleRequest;
 use Inertia\Inertia;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class VehicleRequestShowPageController extends Controller
 {
-    public function index($id)
+    public function index(Request $request,$id)
     {
         $vehicle = VehicleRequest::with(['user', 'approver', 'vehicle', 'driver.user'])->findOrFail($id);
+
+                                $user = $request->user();
+        $user_id = $user->id;
+        $isOwner = $vehicle->user_id === $user_id;
+        $isAdmin = $user->is_admin ===1;
+        $isApprover = $vehicle->approver_id === $user_id;
+        $isManager = $vehicle->user && $vehicle->user->manager_id === $user_id;
+        if (!$isOwner && !$isApprover && !$isManager && !$isAdmin) {
+            abort(403, 'Access denied');
+        }
+
 
         return Inertia::render('vehicle/show', [
             'data' => [
