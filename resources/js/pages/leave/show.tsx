@@ -62,6 +62,10 @@ export default function LeaveShow() {
             <span className="font-medium">Employee Code:</span>
             <div className="text-gray-900">{data.employeeCode ?? '—'}</div>
           </div>
+          <div>
+            <span className="font-medium">Type:</span>
+            <div className="text-gray-900">{data.type ?? '—'}</div>
+          </div>
 
           <div>
             <span className="font-medium">Start At:</span>

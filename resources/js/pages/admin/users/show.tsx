@@ -74,7 +74,7 @@ export default function UserShowPage() {
             setSuccessMessage(`Leave balance updated successfully.`);
             setLeaveModalOpen(false);
             setTimeout(() => setSuccessMessage(null), 10000);
-            location.reload();
+            // location.reload();
         } catch (error) {
             console.error('Failed to update leave balance:', error);
             alert('An error occurred while updating leave balance.');

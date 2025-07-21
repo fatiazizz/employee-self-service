@@ -34,6 +34,7 @@ class LeaveRequestShowPageController extends Controller
                 'end_at' => Carbon::parse($leave->end_at)->format('Y-m-d H:i:s'),
                 'created_at' => Carbon::parse($leave->created_at)->format('Y-m-d H:i:s'),
                 'status' => $leave->status,
+                'type' => $leave->type,
                 'comment' => $leave->comment,
                 'approver' => $leave->approver ? [
                     'id' => $leave->approver->id,

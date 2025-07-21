@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 class LeaveRequest extends Model
 {
     protected $fillable = [
+        'type',
         'user_id',
         'approver_id',
         'start_at',

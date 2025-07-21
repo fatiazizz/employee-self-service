@@ -72,7 +72,7 @@ export default function CreateLeave() {
     const handleFinalSubmit = async () => {
         try {
             await api.post('/leave-request/create', {
-                leave_type: data.leaveType,
+                type: data.leaveType,
                 start_at: data.startDateTime,
                 end_at: data.endDateTime,
                 total_days: calculatedLeave,

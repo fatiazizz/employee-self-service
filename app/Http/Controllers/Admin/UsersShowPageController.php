@@ -73,8 +73,12 @@ public function setManagerStatus($id, Request $request)
         $leaveBalance->used_hours = 0;
     }
 
-    $leaveBalance->total_hours = $request->input('remaining_hours');
-    $leaveBalance->save();
+    $total_hours = ($leaveBalance->total_hours ? $leaveBalance->total_hours : 0) + $request->remaining_hours;
+    $leaveBalance->update([
+        "total_hours"=>$total_hours
+    ]);
+    
+    // $leaveBalance->save();
 
     return response()->json([
         'message' => 'Leave balance updated',

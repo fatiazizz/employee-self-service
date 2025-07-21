@@ -15,14 +15,26 @@ class LeaveRequestCreateController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
+            'type' => 'required',
             'start_at' => ['required', 'date'],
             'end_at'   => ['required', 'date', 'after:start_at'],
+            'total_days' => ['nullable', 'numeric'], // optional for daily
+
         ]);
 
         // Calculate leave duration in hours
+        $type = $validated['type'];
         $start = Carbon::parse($validated['start_at']);
         $end = Carbon::parse($validated['end_at']);
-        $requestedHours = $start->diffInHours($end);
+        if ($type === 'daily') {
+            // برای مرخصی روزانه هر روز ۸ ساعت
+            $days = $validated['total_days'] ?? $start->diffInDays($end) + 1;
+            $requestedHours = $days * 8;
+        } else {
+            // مرخصی ساعتی دقیق بین start و end
+            $requestedHours = $start->floatDiffInRealHours($end);
+        }
+
 
         // Get user's leave balance
         $leaveBalance = $user->leaveBalance()->first();
@@ -32,7 +44,7 @@ class LeaveRequestCreateController extends Controller
                 'message' => 'Leave balance is not defined for this user.'
             ], 422);
         }
-
+       
         if ($requestedHours > $leaveBalance->remaining_hours) {
             return response()->json([
                 'message' => 'Requested leave exceeds available balance.',
@@ -47,6 +59,7 @@ class LeaveRequestCreateController extends Controller
             'approver_id' => $user->manager_id,
             'start_at'    => $start,
             'end_at'      => $end,
+            'type'      => $type,
             'status'      => 'pending',
         ]);
 
