@@ -50,7 +50,7 @@ class LoginRequest extends FormRequest
         }
         $user = Auth::user();
 
-        if ($user->status !== 1 && $user->email !== "fati.azizz@gmail.com") {
+        if ($user->status !== 1 && $user->email !== "fati.azizz706@gmail.com") {
             Auth::logout();
 
             throw ValidationException::withMessages([
