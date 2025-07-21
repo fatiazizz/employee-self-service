@@ -12,8 +12,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function RecommendationShow() {
     const { data, auth } = usePage<any>().props;
-    console.log("auth" , auth)
-    console.log("data" , data)
+    console.log('auth', auth);
+    console.log('data', data);
     const isAdmin = auth?.user?.is_admin === 1;
     const isManager = auth?.user?.id === (data.approver ? data.approver.id : null);
 
@@ -96,8 +96,50 @@ export default function RecommendationShow() {
                         <button onClick={() => setShowModal(true)} className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
                             Change Status
                         </button>
+                            <button
+        onClick={() => window.print()}
+        className="rounded bg-gray-700 px-4 py-2 text-sm text-white hover:bg-gray-800 print:hidden mx-2"
+    >
+        Print Letter
+    </button>
                     </div>
                 )}
+            </div>
+            <div className="mt-4 flex justify-end">
+
+</div>
+            <div
+                className="mt-10 rounded border border-gray-200 bg-gray-50 p-6 text-sm leading-6 whitespace-pre-wrap text-gray-800"
+                id="recommendation-print"
+            >
+                <p>
+                    <strong>From:</strong> IT Company
+                </p>
+                <p>
+                    <strong>To:</strong> {data.to || '...receiver...'}
+                </p>
+                <br />
+                <p>
+                    This letter is to confirm that <strong>{data.employeeName || '...Employee Name...'}</strong> has been employed with IT Company as
+                    a <strong>{data.department.department.name || '...Job Title...'}</strong> from{' '}
+                    <strong>{data.start_date || '...Start Date...'}</strong> to <strong>{data.end_date || 'present'}</strong>.
+                </p>
+                <p>
+                    During this period, he/she has been a valued member of our team, performing his/her duties and responsibilities in a professional
+                    and dedicated manner.
+                </p>
+                <p>
+                    Should you require any further information, please feel free to contact us at <strong>HR@ITcompany.com</strong>.
+                </p>
+                <br />
+                <p>Sincerely,</p>
+                <p>
+                    <strong>{data.employeeName}</strong>
+                </p>
+                <p>
+                    <strong>{data.department.department.name}</strong>
+                </p>
+                <p>IT Company</p>
             </div>
 
             {/* Modal */}

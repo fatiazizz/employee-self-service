@@ -54,6 +54,12 @@ const footerNavItems: NavItem[] = [
         href: '/admin/users',
         icon: Users,
     },
+    {
+        title: 'Departments',
+        href: '/admin/departments',
+        icon: Users,
+    },
+    
 
 ];
 

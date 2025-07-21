@@ -74,6 +74,11 @@ class User extends Authenticatable
         return $this->hasOne(LeaveBalance::class)->where('year', now()->format('Y'));
     }
 
+    public function department()
+    {
+        return $this->hasOne(DepartmentUser::class, 'user_id')->with("department");
+    }
+
     public function manager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'manager_id');

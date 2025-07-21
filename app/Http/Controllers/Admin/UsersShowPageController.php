@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Department;
+use App\Models\DepartmentUser;
 use App\Models\LeaveBalance;
 use App\Models\User;
 use Carbon\Carbon;
@@ -13,11 +15,13 @@ class UsersShowPageController extends Controller
 {
     public function show($id)
     {
-        $user = User::with('manager')->findOrFail($id);
+        $user = User::with('manager','leaveBalance','department')->findOrFail($id);
         $allUsers = User::where("is_manager",1)->select('id', 'name')->get();
+        $departeman = Department::get();
 
         return Inertia::render('admin/users/show', [
             'user' => $user,
+            'departeman' => $departeman,
             'allUsers' => $allUsers, // برای انتخاب مدیر جدید
         ]);
     }
@@ -77,5 +81,46 @@ public function setManagerStatus($id, Request $request)
         'remaining_hours' => $leaveBalance->total_hours - $leaveBalance->used_hours,
     ]);
     }
+
+
+
+    public function setChangeStatus(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = !$user->status;
+        if(!$user->start_at){
+            $user->start_at = now();
+        }
+        $user->save();
+
+        return response()->json(['message' => 'User change status.']);
+    }
+
+    
+        public function setChangeStatusEndJob(Request $request, $id)
+    {
+        $user = User::findOrFail($id);
+        $user->status = 0;
+        if(!$user->end_at){
+            $user->end_at = now();
+        }
+        $user->save();
+
+        return response()->json(['message' => 'User change status.']);
+    }
+
+        public function setUpdateJobInfo(Request $request, $id)
+    {
+       DepartmentUser::create([
+            "user_id"=>$id,
+            "department_id"=>$request->department_id,
+            "role"=>$request->job_title,
+        ]);
+ 
+        return response()->json(['message' => 'User Role SUCCESS.']);
+    }
+
+    
+
 
 }

@@ -11,8 +11,8 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CreateRecommendation() {
-    const { employee_name, employee_code } = usePage<any>().props;
-
+    const { employee_name, employee_code, job_title, start_date, end_date,department,role,auth } = usePage<any>().props;
+    console.log("department",department);
     const { data, setData, post, processing, errors, reset } = useForm({
         to: '',
     });
@@ -21,7 +21,6 @@ export default function CreateRecommendation() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-
         setValidationError(null);
 
         try {
@@ -42,7 +41,7 @@ export default function CreateRecommendation() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="New Recommendation Request" />
-            <div className="mx-auto mt-6 w-full max-w-xl rounded bg-white p-6 shadow">
+            <div className="mx-auto mt-6 w-full  rounded bg-white p-6 shadow">
                 <h1 className="mb-4 text-xl font-bold text-gray-800">New Recommendation Request</h1>
 
                 <form onSubmit={handleSubmit} className="space-y-4">
@@ -84,6 +83,21 @@ export default function CreateRecommendation() {
                         </button>
                     </div>
                 </form>
+
+                {/* 👇 پیش‌نمایش متن ایجادشده */}
+                <div className="mt-10 rounded border border-gray-200 bg-gray-50 p-4 text-sm leading-6 text-gray-800 whitespace-pre-wrap">
+                    <p><strong>From:</strong> IT Company</p>
+                    <p><strong>To:</strong> {data.to || '...receiver...'}</p>
+                    <br />
+                    <p>This letter is to confirm that <strong>{employee_name || '...Employee Name...'}</strong> has been employed with IT Company as a <strong>{department.role || '...Job Title...'}</strong> from <strong>{auth.user.start_date || '...Start Date...'}</strong> to <strong>{end_date || 'present'}</strong>.</p>
+                    <p>During this period, he/she has been a valued member of our team, performing his/her duties and responsibilities in a professional and dedicated manner.</p>
+                    <p>Should you require any further information, please feel free to contact us at <strong>HR@ITcompany.com</strong>.</p>
+                    <br />
+                    <p>Sincerely,</p>
+                    <p><strong>{employee_name}</strong></p>
+                    <p><strong>{department.role}</strong></p>
+                    <p>IT Company</p>
+                </div>
             </div>
         </AppLayout>
     );

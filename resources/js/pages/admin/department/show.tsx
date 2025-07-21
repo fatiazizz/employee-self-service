@@ -12,7 +12,7 @@ const breadcrumbs: BreadcrumbItem[] = [
 
 export default function UserShowPage() {
     const { user, allUsers, auth, departeman } = usePage<any>().props;
-    console.log('user', user);
+    console.log('departeman', departeman);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedManagerId, setSelectedManagerId] = useState(user.manager_id);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -153,7 +153,7 @@ export default function UserShowPage() {
                     {/* نمایش بقیه فیلدها */}
                     {Object.entries(user).map(([key, value]) => {
                         // از نمایش فیلدهایی که نمی‌خواهیم تکراری بشن صرف‌نظر می‌کنیم
-                        if (key === 'manager' || key === 'status' || key === 'department') return null;
+                        if (key === 'manager' || key === 'status') return null;
 
                         return (
                             <div key={key}>
@@ -167,10 +167,7 @@ export default function UserShowPage() {
                         <strong className="block text-gray-500">Status</strong>
                         <span className="text-gray-800">{user.status == 0 ? 'Deactive' : 'Active'}</span>
                     </div>
-    <div>
-                        <strong className="block text-gray-500">Department</strong>
-                        <span className="text-gray-800">{user.department?.department?.name ?? '—'}</span>
-                    </div>
+
                     <div>
                         <strong className="block text-gray-500">Manager</strong>
                         <span className="text-gray-800">{user.manager?.name ?? '—'}</span>

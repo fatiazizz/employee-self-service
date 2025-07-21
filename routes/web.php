@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\UsersListPageController;
+use App\Http\Controllers\Admin\DepartemanListPageController;
 use App\Http\Controllers\Admin\UsersShowPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Leave\LeaveRequestCreateController;
@@ -55,7 +56,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             Route::post('/{id}/make-admin', [UsersShowPageController::class, 'makeAdmin']);
             Route::post('{id}/leave-balance', [UsersShowPageController::class, 'setLeaveBalance']);
             Route::post('{id}/set-manager', [UsersShowPageController::class, 'setManagerStatus']);
-
+            Route::post('{id}/change-status', [UsersShowPageController::class, 'setChangeStatus']);
+            Route::post('{id}/change-status-end-job', [UsersShowPageController::class, 'setChangeStatusEndJob']);
+            Route::post('{id}/update-job-info', [UsersShowPageController::class, 'setUpdateJobInfo']);
+        });
+        Route::prefix('departments')->group(function () {
+            /*
+            |--------------------------------------------------------------------------
+            | Pages (Inertia)
+            |--------------------------------------------------------------------------
+            */
+            Route::get('/', [DepartemanListPageController::class, 'index'])->name('admin.department.list');
+            Route::post('create', [DepartemanListPageController::class, 'create'])->name('admin.department.create');
         });
     });
 

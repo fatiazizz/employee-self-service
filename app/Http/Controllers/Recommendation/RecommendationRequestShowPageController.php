@@ -2,6 +2,7 @@
 namespace App\Http\Controllers\Recommendation;
 
 use App\Http\Controllers\Controller;
+use App\Models\DepartmentUser;
 use App\Models\RecommendationRequest;
 use Inertia\Inertia;
 use Illuminate\Http\Request;
@@ -12,7 +13,8 @@ class RecommendationRequestShowPageController extends Controller
     {
 
         $recommendation = RecommendationRequest::with(['user', 'approver'])->findOrFail($id);
-
+     $user = $request->user();
+        $department = DepartmentUser::where("user_id",$user->id)->with('department')->first();
         $user = $request->user();
         $user_id = $user->id;
         $isOwner = $recommendation->user_id === $user_id;
@@ -32,6 +34,7 @@ class RecommendationRequestShowPageController extends Controller
                 'created_at'    => $recommendation->created_at->format('Y-m-d H:i:s'),
                 'status'        => $recommendation->status,
                 'comment'       => $recommendation->comment,
+                'department'       => $department,
                 'approver'      => $recommendation->approver ? [
                     'id'    => $recommendation->approver->id,
                     'name'  => $recommendation->approver->name,

@@ -48,7 +48,15 @@ class LoginRequest extends FormRequest
                 'email' => __('auth.failed'),
             ]);
         }
+        $user = Auth::user();
 
+        if ($user->status !== 1) {
+            Auth::logout();
+
+            throw ValidationException::withMessages([
+                'email' => "Your account is not active.",
+            ]);
+        }
         RateLimiter::clear($this->throttleKey());
     }
 
@@ -80,6 +88,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->string('email')).'|'.$this->ip());
+        return Str::transliterate(Str::lower($this->string('email')) . '|' . $this->ip());
     }
 }
