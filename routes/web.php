@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\UsersListPageController;
+use App\Http\Controllers\Manager\ManagerUsersListPageController;
+use App\Http\Controllers\Manager\ManagerUsersShowPageController;
 use App\Http\Controllers\Admin\DepartemanListPageController;
 use App\Http\Controllers\Admin\UsersShowPageController;
 use App\Http\Controllers\DashboardController;
@@ -68,6 +70,18 @@ Route::middleware(['auth', 'verified'])->group(function () {
             */
             Route::get('/', [DepartemanListPageController::class, 'index'])->name('admin.department.list');
             Route::post('create', [DepartemanListPageController::class, 'create'])->name('admin.department.create');
+        });
+    });
+
+    Route::prefix('manager')->group(function () {
+        Route::prefix('users')->group(function () {
+            /*
+            |--------------------------------------------------------------------------
+            | Pages (Inertia)
+            |--------------------------------------------------------------------------
+            */
+            Route::get('/', [ManagerUsersListPageController::class, 'index'])->name('manager.users.list');
+            Route::get('/{id}', [ManagerUsersShowPageController::class, 'show'])->name('manager.users.show');
         });
     });
 
