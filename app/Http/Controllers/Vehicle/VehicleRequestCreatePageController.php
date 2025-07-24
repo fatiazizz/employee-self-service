@@ -16,10 +16,10 @@ class VehicleRequestCreatePageController extends Controller
         $user = $request->user();
 
         $vehicles = Vehicle::where('is_active', true)->get(['id', 'name']);
-        $drivers  = Driver::with('user')->get()->map(function ($driver) {
+        $drivers  = Driver::get()->map(function ($driver) {
             return [
                 'id'   => $driver->id,
-                'name' => $driver->user->name,
+                'name' => $driver->name,
             ];
         });
         $allUsers = User::get();

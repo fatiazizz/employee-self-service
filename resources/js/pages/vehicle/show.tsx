@@ -23,6 +23,8 @@ export default function VehicleShow() {
     const [processing, setProcessing] = useState(false);
 
     const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
+        console.log('formData',formData.vehicle_id);
+        console.log('formData',formData.driver_id);
         try {
             setProcessing(true);
             await api.post(`/vehicle-request/${data.id}/status`, {

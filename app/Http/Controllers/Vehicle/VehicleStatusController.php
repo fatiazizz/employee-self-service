@@ -14,8 +14,8 @@ class VehicleStatusController extends Controller
     {
     $validated = $request->validate([
         'status'      => ['required', 'in:approved,rejected'],
-        'vehicle_id'  => ['required', 'exists:vehicles,id'],
-        'driver_id'   => ['required', 'exists:drivers,id'],
+        'vehicle_id'  => ['required'],
+        'driver_id'   => ['required'],
     ]);
 
         $vehicle = VehicleRequest::findOrFail($id);

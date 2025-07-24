@@ -25,7 +25,7 @@ class VehicleRequestShowPageController extends Controller
         }
        $vehicles = Vehicle::where('is_active', true)->get(['id', 'name']);
         $drivers  = Driver::where('is_active', true)->get();
-
+        
         return Inertia::render('vehicle/show', [
 
             'data' => [
@@ -45,7 +45,7 @@ class VehicleRequestShowPageController extends Controller
                 ] : null,
                 'driver'        => $vehicle->driver ? [
                     'id' => $vehicle->driver->id,
-                    'name' => $vehicle->driver->name,
+                    'name' =>  $vehicle->driver ? $vehicle->driver->name : '-',
                 ] : null,
                 'approver'      => $vehicle->approver ? [
                     'id' => $vehicle->approver->id,
