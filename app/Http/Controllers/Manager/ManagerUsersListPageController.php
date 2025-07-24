@@ -19,26 +19,26 @@ class ManagerUsersListPageController extends Controller
         if (!$currentUser->is_manager) {
             abort(403, 'Access denied');
         }
-        $dep = Department::where("manager_id",$currentUser->id)->first();
-         if (!$dep) {
+        $dep = Department::where("manager_id", $currentUser->id)->first();
+        if (!$dep) {
             abort(403, 'Department Manager Not Found');
         }
 
-        $deppluck = DepartmentUser::where("department_id",$dep->id)->pluck("user_id")->toarray();
-        if(sizeof($deppluck) == 0){
-            abort(403, 'User Not Found');
+        $deppluck = DepartmentUser::where("department_id", $dep->id)->pluck("user_id")->toarray();
+        if (sizeof($deppluck) == 0) {
+            abort(403, 'Department Users Not Found');
         }
-        $users = User::whereIn("id",$deppluck)->withCount([
-    'leaveRequests',
-    'vehicleRequests',
-    'recommendationRequests',
-    'equipmentRequests',
-])->with([
-    'leaveRequests' => fn($q) => $q->latest()->limit(1),
-    'vehicleRequests' => fn($q) => $q->latest()->limit(1),
-    'recommendationRequests' => fn($q) => $q->latest()->limit(1),
-    'equipmentRequests' => fn($q) => $q->latest()->limit(1),
-])->get();
+        $users = User::whereIn("id", $deppluck)->withCount([
+            'leaveRequests',
+            'vehicleRequests',
+            'recommendationRequests',
+            'equipmentRequests',
+        ])->with([
+            'leaveRequests' => fn($q) => $q->latest()->limit(1),
+            'vehicleRequests' => fn($q) => $q->latest()->limit(1),
+            'recommendationRequests' => fn($q) => $q->latest()->limit(1),
+            'equipmentRequests' => fn($q) => $q->latest()->limit(1),
+        ])->get();
 
         $userList = $users->map(function ($user) {
             return [

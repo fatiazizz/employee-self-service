@@ -17,7 +17,6 @@ class DepartemanListPageController extends Controller
 
         $datalist = Department::get();
 
-
         return Inertia::render('admin/department/index', [
             'departments' => $datalist,
         ]);

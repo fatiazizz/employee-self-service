@@ -17,7 +17,6 @@ class DepartemanListPageController extends Controller
         $users = User::where("is_manager", 1)->get();
         $datalist = Department::with('manager')->get();
 
-
         return Inertia::render('admin/department/index', [
             'departments' => $datalist,
             'users' => $users,
