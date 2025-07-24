@@ -73,6 +73,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
             */
             Route::get('/', [DepartemanListPageController::class, 'index'])->name('admin.department.list');
             Route::post('create', [DepartemanListPageController::class, 'create'])->name('admin.department.create');
+
+            Route::post('{id}/set-manager', [DepartemanListPageController::class, 'setManager']);
+
         });
         Route::prefix('driver')->group(function () {
             /*

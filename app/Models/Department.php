@@ -10,7 +10,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 class Department extends Model
 {
     protected $table = 'department';
-    protected $fillable = ['name'];
+    protected $fillable = ['name' , 'manager_id'];
     use HasFactory;
 
+
+    public function manager()
+    {
+        return $this->hasOne(User::class , "id","manager_id");
+    }
+
+    
 }
