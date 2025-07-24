@@ -13,11 +13,19 @@ class VehicleStatusController extends Controller
 {
     public function update($id, Request $request)
     {
+<<<<<<< HEAD
         $validated = $request->validate([
             'status'      => ['required', 'in:approved,rejected'],
             'vehicle_id'  => ['required'],
             'driver_id'   => ['required'],
         ]);
+=======
+    $validated = $request->validate([
+        'status'      => ['required', 'in:approved,rejected'],
+        'vehicle_id'  => ['required'],
+        'driver_id'   => ['required'],
+    ]);
+>>>>>>> 15d67e50e5c7cc6784effd80e1e5e54a1c12c71b
 
         $vehicle = VehicleRequest::findOrFail($id);
         $vehicle->update([

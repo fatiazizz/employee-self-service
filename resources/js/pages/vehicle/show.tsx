@@ -23,8 +23,13 @@ export default function VehicleShow() {
     const [processing, setProcessing] = useState(false);
 
     const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
+<<<<<<< HEAD
                   console.log('formData',formData.vehicle_id);
             console.log('formData',formData.driver_id);
+=======
+        console.log('formData',formData.vehicle_id);
+        console.log('formData',formData.driver_id);
+>>>>>>> 15d67e50e5c7cc6784effd80e1e5e54a1c12c71b
         try {
             console.log('formData',formData.vehicle_id);
             console.log('formData',formData.driver_id);
