@@ -10,14 +10,10 @@ class Driver extends Model
         use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'name',
         'license_number',
         'phone',
         'is_active',
     ];
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
 }

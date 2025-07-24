@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use Illuminate\Http\Request;
 use App\Models\Vehicle;
 use App\Models\Driver;
+use App\Models\User;
 
 class VehicleRequestCreatePageController extends Controller
 {
@@ -21,8 +22,9 @@ class VehicleRequestCreatePageController extends Controller
                 'name' => $driver->user->name,
             ];
         });
-
+        $allUsers = User::get();
         return Inertia::render('vehicle/create', [
+            'allUsers' => $allUsers,
             'employee_name' => $user->name,
             'employee_code' => "EMP00" . $user->id,
             'now'           => now()->format('Y-m-d\TH:i'),

@@ -84,20 +84,6 @@ export default function CreateRecommendation() {
                     </div>
                 </form>
 
-                {/* 👇 پیش‌نمایش متن ایجادشده */}
-                <div className="mt-10 rounded border border-gray-200 bg-gray-50 p-4 text-sm leading-6 text-gray-800 whitespace-pre-wrap">
-                    <p><strong>From:</strong> IT Company</p>
-                    <p><strong>To:</strong> {data.to || '...receiver...'}</p>
-                    <br />
-                    <p>This letter is to confirm that <strong>{employee_name || '...Employee Name...'}</strong> has been employed with IT Company as a <strong>{department.role || '...Job Title...'}</strong> from <strong>{auth.user.start_date || '...Start Date...'}</strong> to <strong>{end_date || 'present'}</strong>.</p>
-                    <p>During this period, he/she has been a valued member of our team, performing his/her duties and responsibilities in a professional and dedicated manner.</p>
-                    <p>Should you require any further information, please feel free to contact us at <strong>HR@ITcompany.com</strong>.</p>
-                    <br />
-                    <p>Sincerely,</p>
-                    <p><strong>{employee_name}</strong></p>
-                    <p><strong>{department.role}</strong></p>
-                    <p>IT Company</p>
-                </div>
             </div>
         </AppLayout>
     );

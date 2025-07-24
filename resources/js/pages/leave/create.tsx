@@ -25,6 +25,12 @@ export default function CreateLeave() {
         totalDays: 0,
     });
 
+        function formatHoursToDays(hours: number): string {
+        const days = Math.floor(hours / 8);
+        const remainingHours = hours % 8;
+        return `${days}  Days and ${remainingHours} Hour`;
+    }
+
     const [validationError, setValidationError] = useState<string | null>(null);
 
     const calculateDays = () => {
@@ -114,6 +120,7 @@ export default function CreateLeave() {
                     <div>
                         <label className="mb-1 block text-sm font-medium">Remaining Leave</label>
                         <input value={data.remainingLeave} disabled className="w-full rounded border bg-gray-100 px-3 py-2" />
+                        <div className='mt-2'> Equivalent to: {formatHoursToDays(data.remainingLeave)}</div>
                     </div>
 
                     <div>

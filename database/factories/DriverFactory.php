@@ -15,7 +15,7 @@ class DriverFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id'        => User::factory(), // به صورت خودکار یوزر هم می‌سازه
+            'name'        => $this->faker->name, 
             'license_number' => strtoupper($this->faker->bothify('DRV-#######')),
             'phone'          => $this->faker->phoneNumber,
             'is_active'      => true,

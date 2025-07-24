@@ -14,10 +14,12 @@ class VehicleRequestCreateController extends Controller
         $user = $request->user();
 
         $validated = $request->validate([
-            'vehicle_id' => ['required', 'exists:vehicles,id'],
-            'driver_id'  => ['nullable', 'exists:users,id'],
-            'start_at'   => ['required', 'date'],
-            'end_at'     => ['required', 'date', 'after:start_at'],
+            'start_at'     => ['required', 'date'],
+            'end_at'       => ['required', 'date', 'after:start_at'],
+            'origin'       => ['required', 'string', 'max:255'],
+            'destination'  => ['required', 'string', 'max:255'],
+            'companions'   => ['nullable', 'array', 'max:3'],
+            'companions.*' => ['exists:users,id'],
         ]);
 
         $start = Carbon::parse($validated['start_at']);
@@ -26,10 +28,11 @@ class VehicleRequestCreateController extends Controller
         $vehicleRequest = VehicleRequest::create([
             'user_id'     => $user->id,
             'approver_id' => $user->manager_id,
-            'vehicle_id'  => $validated['vehicle_id'],
-            'driver_id'   => $validated['driver_id'],
             'start_at'    => $start,
             'end_at'      => $end,
+            'origin'      => $validated['origin'],
+            'destination' => $validated['destination'],
+            'companions'  => $validated['companions'] ?? [],
             'status'      => 'pending',
         ]);
 

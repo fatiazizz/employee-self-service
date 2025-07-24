@@ -94,7 +94,7 @@ export default function Dashboard() {
                 </table>
             </div>
         </div>
-        {managedUsers?.length > 0 && (
+        {/* {managedUsers?.length > 0 && (
     <div className="mt-10 rounded bg-white p-4 shadow">
         <h3 className="mb-4 text-lg font-semibold text-gray-800">Users You Manage</h3>
 
@@ -117,7 +117,7 @@ export default function Dashboard() {
             </tbody>
         </table>
     </div>
-)}
+)} */}
 
         </AppLayout>
     );

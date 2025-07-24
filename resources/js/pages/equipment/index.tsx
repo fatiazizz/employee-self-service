@@ -37,7 +37,6 @@ export default function EquipmentList() {
                             <tr>
                                 <th className="px-4 py-3">Employee</th>
                                 <th className="px-4 py-3">Code</th>
-                                <th className="px-4 py-3">Items</th>
                                 <th className="px-4 py-3">Created At</th>
                                 <th className="px-4 py-3">Status</th>
                                 <th className="px-4 py-3">Actions</th>
@@ -48,11 +47,7 @@ export default function EquipmentList() {
                                 <tr key={req.id} className="border-b text-center hover:bg-gray-50">
                                     <td className="px-4 py-3">{req.employeeName}</td>
                                     <td className="px-4 py-3">{req.employeeCode}</td>
-                                    <td className="px-4 py-3">
-                                        {Array.isArray(req.items) && req.items.length > 0
-                                            ? req.items.join(', ')
-                                            : '—'}
-                                    </td>
+        
                                     <td className="px-4 py-3">{req.createdAt}</td>
                                     <td className="px-4 py-3">
                                         <span className={`inline-block rounded-full px-3 py-1 text-xs font-medium ${statusStyles[req.status]}`}>

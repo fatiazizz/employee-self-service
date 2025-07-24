@@ -96,18 +96,20 @@ export default function RecommendationShow() {
                         <button onClick={() => setShowModal(true)} className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
                             Change Status
                         </button>
-                            <button
-        onClick={() => window.print()}
-        className="rounded bg-gray-700 px-4 py-2 text-sm text-white hover:bg-gray-800 print:hidden mx-2"
-    >
-        Print Letter
-    </button>
+                    </div>
+                )}
+                {status === 'approved' && (isAdmin || isManager) && (
+                    <div className="mt-6 flex justify-end">
+                        <button
+                            onClick={() => window.print()}
+                            className="mx-2 rounded bg-gray-700 px-4 py-2 text-sm text-white hover:bg-gray-800 print:hidden"
+                        >
+                            Print Letter
+                        </button>
                     </div>
                 )}
             </div>
-            <div className="mt-4 flex justify-end">
-
-</div>
+            <div className="mt-4 flex justify-end"></div>
             <div
                 className="mt-10 rounded border border-gray-200 bg-gray-50 p-6 text-sm leading-6 whitespace-pre-wrap text-gray-800"
                 id="recommendation-print"

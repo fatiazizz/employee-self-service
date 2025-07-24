@@ -14,10 +14,12 @@ class EquipmentRequestCreateController extends Controller
     {
        $user = $request->user();
 
-        $validated = $request->validate([
-            'items' => ['required', 'array', 'min:1'],
-            'items.*' => ['string', 'in:case,monitor,mouse,keyboard,printer,cartridge'],
-        ]);
+$validated = $request->validate([
+    'items' => ['required', 'array', 'min:1'],
+    'items.*.type' => ['required', 'string', 'in:case,monitor,mouse,keyboard,printer,cartridge'],
+    'items.*.quantity' => ['required', 'integer', 'min:1'],
+]);
+
 
         $deviceRequest = EquipmentRequest::create([
             'user_id'     => $user->id,

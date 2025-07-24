@@ -5,6 +5,9 @@ use App\Http\Controllers\Manager\ManagerUsersListPageController;
 use App\Http\Controllers\Manager\ManagerUsersShowPageController;
 use App\Http\Controllers\Admin\DepartemanListPageController;
 use App\Http\Controllers\Admin\UsersShowPageController;
+use App\Http\Controllers\Admin\WarehouseListPageController;
+use App\Http\Controllers\Admin\VehicleListPageController;
+use App\Http\Controllers\Admin\DriverListPageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\Leave\LeaveRequestCreateController;
 use App\Http\Controllers\Leave\LeaveRequestCreatePageController;
@@ -70,6 +73,39 @@ Route::middleware(['auth', 'verified'])->group(function () {
             */
             Route::get('/', [DepartemanListPageController::class, 'index'])->name('admin.department.list');
             Route::post('create', [DepartemanListPageController::class, 'create'])->name('admin.department.create');
+        });
+        Route::prefix('driver')->group(function () {
+            /*
+            |--------------------------------------------------------------------------
+            | Pages (Inertia)
+            |--------------------------------------------------------------------------
+            */
+            Route::get('/', [DriverListPageController::class, 'index'])->name('admin.department.list');
+            Route::post('create', [DriverListPageController::class, 'create'])->name('admin.department.create');
+            Route::post('/{id}/toggle-status', [DriverListPageController::class, 'toggleStatus']);
+
+        });
+        Route::prefix('vehicles')->group(function () {
+            /*
+            |--------------------------------------------------------------------------
+            | Pages (Inertia)
+            |--------------------------------------------------------------------------
+            */
+            Route::get('/', [VehicleListPageController::class, 'index'])->name('admin.vehicles.list');
+            Route::post('create', [VehicleListPageController::class, 'create'])->name('admin.vehicles.create');
+            Route::put('/{id}/toggle-status', [VehicleListPageController::class, 'toggleStatus']);
+
+        });
+        Route::prefix('warehouse')->group(function () {
+            /*
+            |--------------------------------------------------------------------------
+            | Pages (Inertia)
+            |--------------------------------------------------------------------------
+            */
+            Route::get('/', [WarehouseListPageController::class, 'index'])->name('admin.department.list');
+            Route::post('create', [WarehouseListPageController::class, 'create'])->name('admin.department.create');
+            Route::post('/{id}/update-quantity', [WarehouseListPageController::class, 'updateQuantity']);
+
         });
     });
 

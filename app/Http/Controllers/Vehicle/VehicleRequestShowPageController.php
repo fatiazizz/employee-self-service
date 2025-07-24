@@ -6,6 +6,8 @@ use App\Models\VehicleRequest;
 use Inertia\Inertia;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Models\Vehicle;
+use App\Models\Driver;
 
 class VehicleRequestShowPageController extends Controller
 {
@@ -21,10 +23,19 @@ class VehicleRequestShowPageController extends Controller
         if (!$isOwner && !$isManager && !$isAdmin) {
             abort(403, 'Access denied');
         }
-
+       $vehicles = Vehicle::where('is_active', true)->get(['id', 'name']);
+        $drivers  = Driver::where('is_active', true)->get()->map(function ($driver) {
+            return [
+                'id'   => $driver->id,
+                'name' => $driver->user->name,
+            ];
+        });
 
         return Inertia::render('vehicle/show', [
+
             'data' => [
+                'allVehicles'      => $vehicles,
+            'allDrivers'       => $drivers,
                 'id'            => $vehicle->id,
                 'employeeName'  => $vehicle->user->name ?? '',
                 'employeeCode'  => 'EMP00' . $vehicle->user->id ?? '',

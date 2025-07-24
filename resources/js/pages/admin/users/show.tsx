@@ -11,8 +11,9 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function UserShowPage() {
-    const { user, allUsers, auth, departeman } = usePage<any>().props;
+    const { user, allUsers, auth, departeman , departeman_user } = usePage<any>().props;
     console.log('user', user);
+    console.log('departeman_user', departeman_user);
     const [isModalOpen, setModalOpen] = useState(false);
     const [selectedManagerId, setSelectedManagerId] = useState(user.manager_id);
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -27,6 +28,15 @@ export default function UserShowPage() {
     const [jobModalOpen, setJobModalOpen] = useState(false);
     const [selectedDepartmentId, setSelectedDepartmentId] = useState(user.department_id ?? '');
     const [jobTitle, setJobTitle] = useState(user.job_title ?? '');
+    const [additionalLeaveHours, setAdditionalLeaveHours] = useState(0);
+
+    useEffect(() => {
+    if (departeman_user) {
+        setSelectedDepartmentId(departeman_user.department_id);
+        setJobTitle(departeman_user.role);
+    }
+}, [departeman_user]);
+
 
     useEffect(() => {
         if (user.leave_balance) {
@@ -34,6 +44,12 @@ export default function UserShowPage() {
             setLeaveHours(balanceValue);
         }
     }, [user.leave_balance]);
+
+    function formatHoursToDays(hours: number): string {
+        const days = Math.floor(hours / 8);
+        const remainingHours = hours % 8;
+        return `${days}  Days and ${remainingHours} Hour`;
+    }
 
     const handleSaveManager = async () => {
         try {
@@ -69,7 +85,7 @@ export default function UserShowPage() {
     const handleSaveLeaveBalance = async () => {
         try {
             await api.post(`/admin/users/${user.id}/leave-balance`, {
-                remaining_hours: leaveHours,
+                remaining_hours: additionalLeaveHours,
             });
             setSuccessMessage(`Leave balance updated successfully.`);
             setLeaveModalOpen(false);
@@ -153,7 +169,7 @@ export default function UserShowPage() {
                     {/* نمایش بقیه فیلدها */}
                     {Object.entries(user).map(([key, value]) => {
                         // از نمایش فیلدهایی که نمی‌خواهیم تکراری بشن صرف‌نظر می‌کنیم
-                        if (key === 'manager' || key === 'status' || key === 'department') return null;
+                        if (key === 'manager' || key === 'status' || key === 'department' || key === 'leave_balance') return null;
 
                         return (
                             <div key={key}>
@@ -163,11 +179,16 @@ export default function UserShowPage() {
                         );
                     })}
 
+           <div>
+                        <strong className="block text-gray-500">Leave Balance</strong>
+                            <span className="text-gray-800">({ user.leave_balance ? formatHoursToDays(user.leave_balance?.total_hours - user.leave_balance?.used_hours) : "-"})</span>
+                    </div>
+
                     <div>
                         <strong className="block text-gray-500">Status</strong>
                         <span className="text-gray-800">{user.status == 0 ? 'Deactive' : 'Active'}</span>
                     </div>
-    <div>
+                    <div>
                         <strong className="block text-gray-500">Department</strong>
                         <span className="text-gray-800">{user.department?.department?.name ?? '—'}</span>
                     </div>
@@ -270,14 +291,26 @@ export default function UserShowPage() {
 
             <Modal show={leaveModalOpen} onClose={() => setLeaveModalOpen(false)}>
                 <div className="p-6">
-                    <h2 className="mb-4 text-lg font-semibold">Set Leave Balance</h2>
+                    <h2 className="mb-4 text-lg font-semibold">Add Leave Balance</h2>
+                    <p className="mb-4 text-sm text-gray-600">
+                        The entered hours will be <strong>added</strong> to the user's current remaining leave balance.
+                    </p>
+                    <div className="my-3 text-sm text-gray-600">
+                        Equivalent to: <strong>{formatHoursToDays(leaveHours)}</strong>
+                    </div>
+
                     <input
                         type="number"
                         min={0}
-                        value={leaveHours}
-                        onChange={(e) => setLeaveHours(Number(e.target.value))}
+                        value={additionalLeaveHours}
+                        onChange={(e) => setAdditionalLeaveHours(Number(e.target.value))}
                         className="w-full rounded border px-3 py-2"
                     />
+
+                    <p className="my-4 text-sm text-gray-700">
+                        After adding: <strong>{formatHoursToDays(leaveHours + additionalLeaveHours)}</strong>
+                    </p>
+
                     <div className="mt-4 flex justify-end gap-2">
                         <button className="rounded px-4 py-2 text-gray-600 hover:text-gray-800" onClick={() => setLeaveModalOpen(false)}>
                             Cancel

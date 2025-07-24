@@ -1,4 +1,5 @@
-<?php 
+<?php
+
 namespace App\Http\Controllers\Vehicle;
 
 use App\Http\Controllers\Controller;
@@ -14,16 +15,15 @@ class VehicleRequestPageController extends Controller
         $user = $request->user();
 
         $query = VehicleRequest::query()
-            ->with(['user', 'vehicle', 'driver.user']); // لود خودکار روابط
+            ->with(['user', 'vehicle', 'driver.user']);
 
-                            // فقط اگر ادمین نباشد، فیلتر خاص اعمال شود
-    if (!$user->is_admin) {
-        $query->where(function ($q) use ($user) {
-            $q->where('user_id', $user->id)
-              ->orWhere('approver_id', $user->id);
-        });
-    }
 
+        if (!$user->is_admin) {
+            $query->where(function ($q) use ($user) {
+                $q->where('user_id', $user->id)
+                    ->orWhere('approver_id', $user->id);
+            });
+        }
 
         $vehicleRequests = $query->latest()->get()->map(function ($vehicle) {
             return [

@@ -12,13 +12,16 @@ const breadcrumbs: BreadcrumbItem[] = [
 ];
 
 export default function CreateVehicle() {
-    const { employee_name, employee_code, now, vehicles, drivers } = usePage<any>().props;
-
+    const { employee_name, employee_code, now, allUsers } = usePage<any>().props;
+  
     const { data, setData, post, processing, errors, reset } = useForm({
         vehicle_id: '',
         driver_id: '',
         startDateTime: now,
         endDateTime: now,
+        origin: '',
+        destination: '',
+        companions: [], // array of selected user ids
     });
 
     const [validationError, setValidationError] = useState<string | null>(null);
@@ -34,6 +37,9 @@ export default function CreateVehicle() {
                 driver_id: data.driver_id || null,
                 start_at: data.startDateTime,
                 end_at: data.endDateTime,
+                origin: data.origin,
+                destination: data.destination,
+                companions: data.companions,
             });
             router.visit('/vehicle-request');
         } catch (error: any) {
@@ -60,23 +66,69 @@ export default function CreateVehicle() {
 
                     <div>
                         <label className="mb-1 block text-sm font-medium">Employee Name</label>
-                        <input
-                            value={employee_name}
-                            disabled
-                            className="w-full rounded border bg-gray-100 px-3 py-2"
-                        />
+                        <input value={employee_name} disabled className="w-full rounded border bg-gray-100 px-3 py-2" />
                     </div>
 
                     <div>
                         <label className="mb-1 block text-sm font-medium">Employee Code</label>
+                        <input value={employee_code} disabled className="w-full rounded border bg-gray-100 px-3 py-2" />
+                    </div>
+
+                    {/* مبدا */}
+                    <div>
+  <label className="mb-1 block text-sm font-medium">Origin</label>
                         <input
-                            value={employee_code}
-                            disabled
-                            className="w-full rounded border bg-gray-100 px-3 py-2"
+                            type="text"
+                            value={data.origin}
+                            onChange={(e) => setData('origin', e.target.value)}
+                            className="w-full rounded border px-3 py-2"
+                            required
                         />
                     </div>
 
+                    {/* مقصد */}
                     <div>
+  <label className="mb-1 block text-sm font-medium">Destination</label>
+                        <input
+                            type="text"
+                            value={data.destination}
+                            onChange={(e) => setData('destination', e.target.value)}
+                            className="w-full rounded border px-3 py-2"
+                            required
+                        />
+                    </div>
+
+                    {/* همراهان (حداکثر ۳ نفر) */}
+                    <div>
+  <label className="mb-1 block text-sm font-medium">Companions (up to 3 people)</label>
+                        <div className="max-h-40 space-y-2 overflow-auto rounded border p-2">
+                            {allUsers.map((user: any) => (
+                                <div key={user.id} className="flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        value={user.id}
+                                        checked={data.companions.includes(user.id)}
+                                        onChange={(e) => {
+                                            const id = parseInt(e.target.value);
+                                            const checked = e.target.checked;
+                                            if (checked && data.companions.length < 3) {
+                                                setData('companions', [...data.companions, id]);
+                                            } else if (!checked) {
+                                                setData(
+                                                    'companions',
+                                                    data.companions.filter((uid) => uid !== id),
+                                                );
+                                            }
+                                        }}
+                                    />
+                                    <span className="text-sm">{user.name}</span>
+                                </div>
+                            ))}
+                        </div>
+    <div className="mt-1 text-sm text-red-600">You can select up to 3 companions only.</div>
+                    </div>
+
+                    {/* <div>
                         <label className="mb-1 block text-sm font-medium">Select Vehicle</label>
                         <select
                             required
@@ -109,7 +161,7 @@ export default function CreateVehicle() {
                             ))}
                         </select>
                         {errors.driver_id && <div className="mt-1 text-sm text-red-600">{errors.driver_id}</div>}
-                    </div>
+                    </div> */}
 
                     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                         <div>
@@ -145,11 +197,7 @@ export default function CreateVehicle() {
                         >
                             Decline
                         </button>
-                        <button
-                            type="submit"
-                            disabled={processing}
-                            className="rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700"
-                        >
+                        <button type="submit" disabled={processing} className="rounded bg-blue-600 px-4 py-2 text-white transition hover:bg-blue-700">
                             Submit
                         </button>
                     </div>

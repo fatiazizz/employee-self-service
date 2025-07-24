@@ -3,7 +3,7 @@ import { NavUser } from '@/components/nav-user';
 import { Sidebar, SidebarContent, SidebarFooter, SidebarHeader, SidebarMenu, SidebarMenuButton, SidebarMenuItem } from '@/components/ui/sidebar';
 import { type NavItem, type SharedData } from '@/types';
 import { Link, usePage } from '@inertiajs/react';
-import { CalendarClock, Car, ClipboardList, LayoutGrid, ScrollText, Users } from 'lucide-react';
+import { CalendarClock, Car, CarFront, CarIcon, ClipboardList, LayoutGrid, ScrollText, Users, Warehouse } from 'lucide-react';
 import AppLogo from './app-logo';
 import { NavFooter } from './nav-footer';
 import { NavDepMain } from './nav-dep';
@@ -54,6 +54,21 @@ const footerNavItems: NavItem[] = [
         title: 'Departments',
         href: '/admin/departments',
         icon: Users,
+    },
+      {
+        title: 'Warehouse',
+        href: '/admin/warehouse',
+        icon: Warehouse,
+    },
+          {
+        title: 'Driver',
+        href: '/admin/driver',
+        icon: CarIcon,
+    },
+              {
+        title: 'Vehicles',
+        href: '/admin/vehicles',
+        icon: CarFront,
     },
 ];
 

@@ -23,6 +23,7 @@ class VehicleRequest extends Model
     protected $casts = [
         'start_at' => 'datetime',
         'end_at' => 'datetime',
+         'companions' => 'array',
     ];
 
     public function user(): BelongsTo

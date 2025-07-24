@@ -19,12 +19,17 @@ class UsersListPageController extends Controller
         }
 
         // گرفتن همه کاربران (به جز مدیر اصلی)
-        $users = User::with([
-            'leaveRequests' => fn($q) => $q->latest()->limit(1),
-            'vehicleRequests' => fn($q) => $q->latest()->limit(1),
-            'recommendationRequests' => fn($q) => $q->latest()->limit(1),
-            'equipmentRequests' => fn($q) => $q->latest()->limit(1),
-        ])->get();
+        $users = User::withCount([
+    'leaveRequests',
+    'vehicleRequests',
+    'recommendationRequests',
+    'equipmentRequests',
+])->with([
+    'leaveRequests' => fn($q) => $q->latest()->limit(1),
+    'vehicleRequests' => fn($q) => $q->latest()->limit(1),
+    'recommendationRequests' => fn($q) => $q->latest()->limit(1),
+    'equipmentRequests' => fn($q) => $q->latest()->limit(1),
+])->get();
 
         $userList = $users->map(function ($user) {
             return [
