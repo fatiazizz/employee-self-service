@@ -8,7 +8,7 @@ return new class extends Migration {
     public function up(): void
     {
         Schema::table('drivers', function (Blueprint $table) {
-            $table->string('name')->after('id'); // یا هر جای دلخواه دیگر
+            $table->string('name')->after('id')->nullable();; // یا هر جای دلخواه دیگر
         });
     }
 
