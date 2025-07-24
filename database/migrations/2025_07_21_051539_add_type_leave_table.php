@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::table('leave_requests', function (Blueprint $table) {
-            $table->string('type')->after('user_id');
+            $table->string('type')->after('user_id')->nullable();;
         });
     }
 

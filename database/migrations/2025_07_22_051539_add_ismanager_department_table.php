@@ -8,7 +8,7 @@ return new class extends Migration
 {
     public function up(): void {
         Schema::table('department', function (Blueprint $table) {
-            $table->string('manager_id')->after('name');
+            $table->string('manager_id')->after('name')->nullable();;
         });
     }
 
