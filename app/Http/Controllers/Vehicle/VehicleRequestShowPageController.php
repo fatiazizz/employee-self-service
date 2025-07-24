@@ -13,7 +13,7 @@ class VehicleRequestShowPageController extends Controller
 {
     public function index(Request $request,$id)
     {
-        $vehicle = VehicleRequest::with(['user', 'approver', 'vehicle', 'driver.user'])->findOrFail($id);
+        $vehicle = VehicleRequest::with(['user', 'approver', 'vehicle', 'driver'])->findOrFail($id);
 
                                 $user = $request->user();
         $user_id = $user->id;
@@ -24,12 +24,7 @@ class VehicleRequestShowPageController extends Controller
             abort(403, 'Access denied');
         }
        $vehicles = Vehicle::where('is_active', true)->get(['id', 'name']);
-        $drivers  = Driver::where('is_active', true)->get()->map(function ($driver) {
-            return [
-                'id'   => $driver->id,
-                'name' => $driver->user->name,
-            ];
-        });
+        $drivers  = Driver::where('is_active', true)->get();
 
         return Inertia::render('vehicle/show', [
 
@@ -50,7 +45,7 @@ class VehicleRequestShowPageController extends Controller
                 ] : null,
                 'driver'        => $vehicle->driver ? [
                     'id' => $vehicle->driver->id,
-                    'name' => $vehicle->driver->user->name,
+                    'name' => $vehicle->driver->name,
                 ] : null,
                 'approver'      => $vehicle->approver ? [
                     'id' => $vehicle->approver->id,

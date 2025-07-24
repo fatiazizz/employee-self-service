@@ -36,7 +36,7 @@ export default function DriverIndex() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Driver Overview" />
-            <div className="mb-4 text-right mt-5">
+            <div className="mb-4 text-right mt-5  mr-4">
                 <button onClick={() => setCreateModalOpen(true)} className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">
                     Create New Driver
                 </button>
@@ -70,7 +70,7 @@ export default function DriverIndex() {
                                                 driver.is_active ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'
                                             }`}
                                         >
-                                            {driver.is_active ? 'free' : 'busy'}
+                                            {driver.is_active ? 'Free' : 'Busy'}
                                         </span>
                                     </td>
                                     <td className="border px-4 py-2 text-center">
@@ -83,7 +83,7 @@ export default function DriverIndex() {
                                                     : 'bg-green-600 hover:bg-green-700'
                                             } ${changingStatusId === driver.id ? 'opacity-50 cursor-wait' : ''}`}
                                         >
-                                            {changingStatusId === driver.id ? 'Changing...' : 'Toggle'}
+                                              {driver.is_active === 0 ? 'Free' : 'Busy'}
                                         </button>
                                     </td>
                                 </tr>

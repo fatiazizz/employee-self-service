@@ -22,25 +22,24 @@ export default function VehicleShow() {
     const [successMessage, setSuccessMessage] = useState<string | null>(null);
     const [processing, setProcessing] = useState(false);
 
-const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
-  try {
-    setProcessing(true);
-    await api.post(`/vehicle-request/${data.id}/status`, {
-      status: newStatus,
-      vehicle_id: formData.vehicle_id || null,
-      driver_id: formData.driver_id || null,
-    });
-    setStatus(newStatus);
-    setShowModal(false);
-    setSuccessMessage(`Status changed to ${newStatus.toUpperCase()} successfully.`);
-    setTimeout(() => setSuccessMessage(null), 10000);
-  } catch (error) {
-    console.error('Status change failed:', error);
-  } finally {
-    setProcessing(false);
-  }
-};
-
+    const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
+        try {
+            setProcessing(true);
+            await api.post(`/vehicle-request/${data.id}/status`, {
+                status: newStatus,
+                vehicle_id: formData.vehicle_id || null,
+                driver_id: formData.driver_id || null,
+            });
+            setStatus(newStatus);
+            setShowModal(false);
+            setSuccessMessage(`Status changed to ${newStatus.toUpperCase()} successfully.`);
+            setTimeout(() => setSuccessMessage(null), 10000);
+        } catch (error) {
+            console.error('Status change failed:', error);
+        } finally {
+            setProcessing(false);
+        }
+    };
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
@@ -111,12 +110,13 @@ const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
                         <div className="text-gray-900">{data.approver?.name ?? 'Not assigned'}</div>
                     </div>
                 </div>
-
-                <div className="mt-6 flex justify-end">
-                    <button onClick={() => setShowModal(true)} className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
-                        Change Status
-                    </button>
-                </div>
+                {status === 'pending' && (
+                    <div className="mt-6 flex justify-end">
+                        <button onClick={() => setShowModal(true)} className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-700">
+                            Change Status
+                        </button>
+                    </div>
+                )}
             </div>
 
             {showModal && (
@@ -130,12 +130,11 @@ const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
                             {/* Vehicle select */}
                             <div>
                                 <label className="mb-1 block text-sm font-medium">Vehicle</label>
-           <select
-  value={formData.vehicle_id}
-  onChange={(e) => setFormData({ ...formData, vehicle_id: e.target.value })}
-  className="w-full rounded border px-3 py-2"
->
-
+                                <select
+                                    value={formData.vehicle_id}
+                                    onChange={(e) => setFormData({ ...formData, vehicle_id: e.target.value })}
+                                    className="w-full rounded border px-3 py-2"
+                                >
                                     <option value="">-- Select Vehicle --</option>
                                     {data.allVehicles?.map((v: any) => (
                                         <option key={v.id} value={v.id}>
@@ -148,12 +147,11 @@ const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
                             {/* Driver select */}
                             <div>
                                 <label className="mb-1 block text-sm font-medium">Driver</label>
-<select
-  value={formData.driver_id}
-  onChange={(e) => setFormData({ ...formData, driver_id: e.target.value })}
-  className="w-full rounded border px-3 py-2"
->
-
+                                <select
+                                    value={formData.driver_id}
+                                    onChange={(e) => setFormData({ ...formData, driver_id: e.target.value })}
+                                    className="w-full rounded border px-3 py-2"
+                                >
                                     <option value="">-- Select Driver --</option>
                                     {data.allDrivers?.map((d: any) => (
                                         <option key={d.id} value={d.id}>
@@ -167,8 +165,7 @@ const handleStatusChange = async (newStatus: 'approved' | 'rejected') => {
                         <div className="flex gap-3">
                             <button
                                 onClick={() => handleStatusChange('approved')}
-                              disabled={processing || !formData.vehicle_id || !formData.driver_id}
-
+                                disabled={processing || !formData.vehicle_id || !formData.driver_id}
                                 className="flex-1 rounded bg-green-600 px-4 py-2 text-sm text-white hover:bg-green-700"
                             >
                                 Approve

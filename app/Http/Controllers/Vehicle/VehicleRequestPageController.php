@@ -15,7 +15,7 @@ class VehicleRequestPageController extends Controller
         $user = $request->user();
 
         $query = VehicleRequest::query()
-            ->with(['user', 'vehicle', 'driver.user']);
+            ->with(['user', 'vehicle', 'driver']);
 
 
         if (!$user->is_admin) {
@@ -30,8 +30,8 @@ class VehicleRequestPageController extends Controller
                 'id' => $vehicle->id,
                 'employeeName' => $vehicle->user->name,
                 'employeeCode' => "EMP00" . $vehicle->user->id,
-                'vehicleName' => optional($vehicle->vehicle)->name,
-                'driverName' => optional($vehicle->driver?->user)->name,
+                'vehicleName' => $vehicle->vehicle?->name,
+                'driverName' => $vehicle->driver?->name,
                 'startDate' => $vehicle->start_at->format('Y-m-d H:i:s'),
                 'endDate'   => $vehicle->end_at->format('Y-m-d H:i:s'),
                 'status'    => $vehicle->status,

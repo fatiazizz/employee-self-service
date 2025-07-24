@@ -61,7 +61,7 @@ export default function VehiclesIndex() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicles Overview" />
-            <div className="mt-5 mb-4 text-right">
+            <div className="mt-5 mb-4 text-right mr-4">
                 <button onClick={() => setCreateModalOpen(true)} className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">
                     Create New Vehicle
                 </button>
@@ -88,14 +88,14 @@ export default function VehiclesIndex() {
                                     <td className="border px-4 py-2">{vehicles.name}</td>
                                     <td className="border px-4 py-2">{vehicles.plate_number}</td>
                                     <td className="border px-4 py-2">{vehicles.type}</td>
-                                    <td className="border px-4 py-2">
+                                    <td className="border px-4 py-2 text-center">
                                         {vehicles.is_active ? (
-                                            <span className="font-semibold text-green-600">Free</span>
+                                            <span className="font-semibold bg-green-100 text-green-800 px-2 py-1">Free</span>
                                         ) : (
-                                            <span className="font-semibold text-red-600">Busy</span>
+                                            <span className="font-semibold bg-red-100 text-red-800 px-2 py-1">Busy</span>
                                         )}
                                     </td>
-                                    <td className="border px-4 py-2">
+                                    <td className="border px-4 py-2 text-center">
                                         <button
                                             onClick={() => toggleStatus(vehicles.id, vehicles.is_active)}
                                             className={`rounded px-3 py-1 font-semibold text-white ${

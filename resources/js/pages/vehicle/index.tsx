@@ -15,7 +15,7 @@ const statusStyles: Record<string, string> = {
 
 export default function VehicleList() {
     const { vehicleRequests } = usePage<any>().props;
-
+    console.log("vehicleRequests",vehicleRequests)
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Vehicle Requests" />

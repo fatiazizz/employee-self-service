@@ -19,7 +19,7 @@ export default function DepartmentIndex() {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users Overview" />
-            <div className="mb-4 text-right mt-5">
+            <div className="mb-4 text-right mt-5  mr-4">
                 <button onClick={() => setCreateModalOpen(true)} className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700">
                     Create New Department
                 </button>
